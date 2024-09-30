@@ -8,13 +8,17 @@
 import UIKit
 
 final class ImagesListCell: UITableViewCell {
-    static let reuseIdentifier = "ImagesListCell"
-    
+
+    // MARK: - IBOutlets
     @IBOutlet private var cellImage: UIImageView!
     @IBOutlet private var dateLabelView: UIView!
     @IBOutlet private var dateLabel: UILabel!
     @IBOutlet private var likeButton: UIButton!
     
+    // MARK: - Private Properties
+    static let reuseIdentifier = "ImagesListCell"
+    
+    // MARK: - Public Methods
     func configCell(image: UIImage, date: String, isLiked: Bool) {
         cellImage.image = image
         dateLabel.text = date
