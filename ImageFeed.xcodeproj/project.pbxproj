@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -33,6 +33,10 @@
 		558F909A2C999B6700068D51 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		55E89FFC2C94B19B00ED81C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		55DDA8522CB5941D002EA64D /* Auth */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Auth; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		5515148A2C88B2D5008D4F87 /* Frameworks */ = {
@@ -64,6 +68,7 @@
 		5515148F2C88B2D5008D4F87 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				55DDA8522CB5941D002EA64D /* Auth */,
 				5501FD502CB037870029386D /* Constants.swift */,
 				558F90992C999B5300068D51 /* SingleImage */,
 				55E89FFB2C94B17F00ED81C4 /* Profile */,
@@ -117,6 +122,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				55DDA8522CB5941D002EA64D /* Auth */,
 			);
 			name = ImageFeed;
 			productName = ImageFeed;
