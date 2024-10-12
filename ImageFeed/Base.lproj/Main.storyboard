@@ -79,18 +79,25 @@
                                     <wkPreferences key="preferences"/>
                                 </wkWebViewConfiguration>
                             </wkWebView>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="26P-XU-PnK">
+                                <rect key="frame" x="0.0" y="92" width="414" height="4"/>
+                            </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="bJE-z8-IDD"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="bJE-z8-IDD" firstAttribute="trailing" secondItem="26P-XU-PnK" secondAttribute="trailing" id="ALk-TW-AN7"/>
                             <constraint firstAttribute="bottom" secondItem="cz4-pg-bVJ" secondAttribute="bottom" id="S8R-6u-2HP"/>
                             <constraint firstAttribute="trailing" secondItem="cz4-pg-bVJ" secondAttribute="trailing" id="SzV-q1-kQR"/>
+                            <constraint firstItem="26P-XU-PnK" firstAttribute="top" secondItem="bJE-z8-IDD" secondAttribute="top" id="Vtw-Sx-vp4"/>
                             <constraint firstItem="cz4-pg-bVJ" firstAttribute="leading" secondItem="5uw-hS-b8i" secondAttribute="leading" id="l2E-fw-YkG"/>
                             <constraint firstItem="cz4-pg-bVJ" firstAttribute="top" secondItem="bJE-z8-IDD" secondAttribute="top" id="nw3-bf-3hA"/>
+                            <constraint firstItem="26P-XU-PnK" firstAttribute="leading" secondItem="bJE-z8-IDD" secondAttribute="leading" id="uDC-Ub-wi9"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="2rZ-Vc-DJv"/>
                     <connections>
+                        <outlet property="progressView" destination="26P-XU-PnK" id="66R-WJ-5nr"/>
                         <outlet property="webView" destination="cz4-pg-bVJ" id="FKo-vy-Kcs"/>
                     </connections>
                 </viewController>
