@@ -13,9 +13,11 @@ enum OAuth2ServiceConstants {
 
 final class OAuth2Service {
     
+    // MARK: - Public Properties
+    var oauth2TokenStorage: OAuth2TokenStorageProtocol?
+    
     // MARK: - Private Properties
     static let shared = OAuth2Service()
-    private var oauth2TokenStorage: OAuth2TokenStorageProtocol?
     
     // MARK: - Initializers
     private init() {
@@ -23,23 +25,28 @@ final class OAuth2Service {
     }
     
     // MARK: - Public Methods
-    func fetchOAuthToken(code: String) {
+    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = makeOAuthTokenRequest(code: code) else {
             return print("Request not found")
         }
         
-        let task = URLSession.shared.data(for: request) { result in
+        let task = URLSession.shared.data(for: request) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let data):
                 do {
                     let oauthTokenResponseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
                     let token = oauthTokenResponseBody.token
                     self.oauth2TokenStorage?.token = token
+                    completion(.success(token))
                 } catch {
                     print("failure decoding: \(error)")
+                    completion(.failure(error))
                 }
                 
-            case .failure(let error): print("failure: \(error)")
+            case .failure(let error):
+                print("failure: \(error)")
+                completion(.failure(error))
             }
         }
         

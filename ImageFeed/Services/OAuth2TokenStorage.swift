@@ -16,9 +16,9 @@ final class OAuth2TokenStorage {
 }
 
 extension OAuth2TokenStorage: OAuth2TokenStorageProtocol {
-    var token: String {
+    var token: String? {
         get {
-            storage.string(forKey: Keys.token.rawValue) ?? ""
+            storage.string(forKey: Keys.token.rawValue) ?? nil
         }
         set {
             storage.set(newValue, forKey: Keys.token.rawValue)
