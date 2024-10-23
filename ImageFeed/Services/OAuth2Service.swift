@@ -18,6 +18,7 @@ final class OAuth2Service {
     
     // MARK: - Private Properties
     static let shared = OAuth2Service()
+    private let jsonDecoder = JSONDecoder()
     
     // MARK: - Initializers
     private init() {
@@ -35,7 +36,7 @@ final class OAuth2Service {
             switch result {
             case .success(let data):
                 do {
-                    let oauthTokenResponseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+                    let oauthTokenResponseBody = try jsonDecoder.decode(OAuthTokenResponseBody.self, from: data)
                     let token = oauthTokenResponseBody.token
                     self.oauth2TokenStorage?.token = token
                     completion(.success(token))
