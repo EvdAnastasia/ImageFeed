@@ -11,6 +11,10 @@ enum OAuth2ServiceConstants {
     static let unsplashOAuthTokenURLString = "https://unsplash.com/oauth/token"
 }
 
+enum AuthServiceError: Error {
+    case invalidRequest
+}
+
 final class OAuth2Service {
     
     // MARK: - Public Properties
@@ -19,6 +23,9 @@ final class OAuth2Service {
     // MARK: - Private Properties
     static let shared = OAuth2Service()
     private let jsonDecoder = JSONDecoder()
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
     
     // MARK: - Initializers
     private init() {
@@ -27,11 +34,24 @@ final class OAuth2Service {
     
     // MARK: - Public Methods
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            return print("Request not found")
+        assert(Thread.isMainThread)
+        
+        guard lastCode != code else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
         }
         
-        let task = URLSession.shared.data(for: request) { [weak self] result in
+        task?.cancel()
+        lastCode = code
+        
+        guard
+            let request = makeOAuthTokenRequest(code: code)
+        else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.data(for: request) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let data):
@@ -49,8 +69,12 @@ final class OAuth2Service {
                 print("failure: \(error)")
                 completion(.failure(error))
             }
+            
+            self.task = nil
+            self.lastCode = nil
         }
         
+        self.task = task
         task.resume()
     }
     
