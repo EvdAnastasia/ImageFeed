@@ -22,6 +22,7 @@
 		558F909B2C999B6700068D51 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558F909A2C999B6700068D51 /* SingleImageViewController.swift */; };
 		55AA59042CBEAC5400D2E46A /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55AA59032CBEAC5400D2E46A /* OAuth2TokenStorage.swift */; };
 		55AA59062CBEAD0D00D2E46A /* OAuth2TokenStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55AA59052CBEAD0D00D2E46A /* OAuth2TokenStorageProtocol.swift */; };
+		55E67C5F2CCEB94800DF980E /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E67C5E2CCEB94800DF980E /* UIBlockingProgressHUD.swift */; };
 		55E89FFD2C94B19B00ED81C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E89FFC2C94B19B00ED81C4 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 		558F909A2C999B6700068D51 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		55AA59032CBEAC5400D2E46A /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		55AA59052CBEAD0D00D2E46A /* OAuth2TokenStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorageProtocol.swift; sourceTree = "<group>"; };
+		55E67C5E2CCEB94800DF980E /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		55E89FFC2C94B19B00ED81C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				555B61162CBC3F3E00D9217F /* URLSession+data.swift */,
+				55E67C5E2CCEB94800DF980E /* UIBlockingProgressHUD.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				551514912C88B2D5008D4F87 /* AppDelegate.swift in Sources */,
 				558F909B2C999B6700068D51 /* SingleImageViewController.swift in Sources */,
 				551514932C88B2D5008D4F87 /* SceneDelegate.swift in Sources */,
+				55E67C5F2CCEB94800DF980E /* UIBlockingProgressHUD.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
