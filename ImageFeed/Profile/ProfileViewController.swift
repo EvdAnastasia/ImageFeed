@@ -10,6 +10,8 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
+    private let storage = OAuth2Service.shared.oauth2TokenStorage
+    
     private lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "Avatar")
@@ -51,9 +53,44 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
+        getProfile()
     }
     
     // MARK: - Private Methods
+    private func getProfile() {
+        guard let storage, let token = storage.token else { return }
+        
+        ProfileService.shared.fetchProfile(token) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let data):
+                let profile = self.convert(model: data)
+                self.showProfileData(data: profile)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    private func convert(model: ProfileResult) -> Profile {
+        Profile(
+            username: model.username,
+            firstName: model.firstName,
+            lastName: model.lastName,
+            bio: model.bio
+        )
+    }
+    
+    private func showProfileData(data: Profile) {
+        nameLabel.text = data.name
+        loginNameLabel.text = data.loginName
+        
+        if let bio = data.bio {
+            descriptionLabel.text = bio
+        }
+    }
+    
     private func setupConstraints() {
         [avatarImageView,
          logoutButton,
