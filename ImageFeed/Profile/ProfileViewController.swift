@@ -10,8 +10,7 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
-    private let storage = OAuth2Service.shared.oauth2TokenStorage
-    
+    private let profileService = ProfileService.shared
     private lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
         view.image = UIImage(named: "Avatar")
@@ -27,7 +26,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Екатерина Новикова"
         label.textColor = .ypWhite
         label.font = .boldSystemFont(ofSize: 23.0)
         return label
@@ -35,7 +33,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var loginNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "@ekaterina_nov"
         label.textColor = .ypGray
         label.font = .systemFont(ofSize: 13.0)
         return label
@@ -43,7 +40,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Hello, World!"
         label.textColor = .ypWhite
         label.font = .systemFont(ofSize: 13.0)
         return label
@@ -53,40 +49,17 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
-        getProfile()
+        
+        guard let profile = profileService.profile else { return }
+        updateProfileDetails(profile: profile)
     }
     
     // MARK: - Private Methods
-    private func getProfile() {
-        guard let storage, let token = storage.token else { return }
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
         
-        ProfileService.shared.fetchProfile(token) { [weak self] result in
-            guard let self else { return }
-            
-            switch result {
-            case .success(let data):
-                let profile = self.convert(model: data)
-                self.showProfileData(data: profile)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-    private func convert(model: ProfileResult) -> Profile {
-        Profile(
-            username: model.username,
-            firstName: model.firstName,
-            lastName: model.lastName,
-            bio: model.bio
-        )
-    }
-    
-    private func showProfileData(data: Profile) {
-        nameLabel.text = data.name
-        loginNameLabel.text = data.loginName
-        
-        if let bio = data.bio {
+        if let bio = profile.bio {
             descriptionLabel.text = bio
         }
     }

@@ -19,6 +19,7 @@ final class ProfileService {
     
     // MARK: - Private Properties
     static let shared = ProfileService()
+    private(set) var profile: Profile?
     private let jsonDecoder = JSONDecoder()
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
@@ -50,6 +51,7 @@ final class ProfileService {
             case .success(let data):
                 do {
                     let profileResult = try jsonDecoder.decode(ProfileResult.self, from: data)
+                    profile = convert(model: profileResult)
                     completion(.success(profileResult))
                 } catch {
                     print("failure decoding: \(error)")
@@ -84,5 +86,14 @@ final class ProfileService {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
+    }
+    
+    private func convert(model: ProfileResult) -> Profile {
+        Profile(
+            username: model.username,
+            firstName: model.firstName,
+            lastName: model.lastName,
+            bio: model.bio
+        )
     }
 }
