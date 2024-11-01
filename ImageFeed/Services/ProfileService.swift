@@ -46,22 +46,15 @@ final class ProfileService {
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             guard let self else { return }
-            
             switch result {
             case .success(let data):
-                do {
-                    let profileResult = try jsonDecoder.decode(ProfileResult.self, from: data)
-                    profile = convert(model: profileResult)
-                    completion(.success(profileResult))
-                } catch {
-                    print("failure decoding: \(error)")
-                    completion(.failure(error))
-                }
+                profile = convert(model: data)
+                completion(.success(data))
                 
             case .failure(let error):
-                print("failure: \(error)")
+                print("[ProfileService.fetchProfile]: NetworkError - \(String(describing: error))")
                 completion(.failure(error))
             }
             

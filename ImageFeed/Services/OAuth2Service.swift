@@ -51,22 +51,16 @@ final class OAuth2Service {
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             guard let self else { return }
             switch result {
             case .success(let data):
-                do {
-                    let oauthTokenResponseBody = try jsonDecoder.decode(OAuthTokenResponseBody.self, from: data)
-                    let token = oauthTokenResponseBody.token
-                    self.oauth2TokenStorage?.token = token
-                    completion(.success(token))
-                } catch {
-                    print("failure decoding: \(error)")
-                    completion(.failure(error))
-                }
+                let token = data.token
+                self.oauth2TokenStorage?.token = token
+                completion(.success(token))
                 
             case .failure(let error):
-                print("failure: \(error)")
+                print("[OAuth2Service.fetchOAuthToken]: NetworkError - \(String(describing: error))")
                 completion(.failure(error))
             }
             

@@ -48,29 +48,22 @@ final class ProfileImageService {
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self else { return }
-            
             switch result {
             case .success(let data):
-                do {
-                    let userResult = try jsonDecoder.decode(UserResult.self, from: data)
-                    let profileImageURL = userResult.profileImage.small
-                    avatarURL = profileImageURL
-                    completion(.success(profileImageURL))
-                    
-                    NotificationCenter.default
-                        .post(
-                            name: ProfileImageService.didChangeNotification,
-                            object: self,
-                            userInfo: ["URL": profileImageURL])
-                } catch {
-                    print("failure decoding: \(error)")
-                    completion(.failure(error))
-                }
+                let profileImageURL = data.profileImage.small
+                avatarURL = profileImageURL
+                completion(.success(profileImageURL))
+                
+                NotificationCenter.default
+                    .post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": profileImageURL])
                 
             case .failure(let error):
-                print("failure: \(error)")
+                print("[ProfileImageService.fetchProfileImageURL]: NetworkError - \(String(describing: error))")
                 completion(.failure(error))
             }
             
