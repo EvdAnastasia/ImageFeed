@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -15,7 +16,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "Avatar")
         return view
     }()
     
@@ -82,7 +82,10 @@ final class ProfileViewController: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
-        // TODO [Sprint 11] Обновить аватар, используя Kingfisher
+        let processor = RoundCornerImageProcessor(cornerRadius: 45)
+        avatarImageView.kf.indicatorType = .activity
+        avatarImageView.kf.setImage(with: url,
+                                    options: [.processor(processor)])
     }
     
     private func setupConstraints() {

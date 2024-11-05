@@ -14,9 +14,9 @@ struct UserResult: Decodable {
 }
 
 struct AvatarURLs: Decodable {
-    let small: String
+    let large: String
     
     private enum CodingKeys: String, CodingKey {
-        case small = "small"
+        case large = "large"
     }
 }

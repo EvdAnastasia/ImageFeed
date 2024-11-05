@@ -52,7 +52,7 @@ final class ProfileImageService {
             guard let self else { return }
             switch result {
             case .success(let data):
-                let profileImageURL = data.profileImage.small
+                let profileImageURL = data.profileImage.large
                 avatarURL = profileImageURL
                 completion(.success(profileImageURL))
                 
