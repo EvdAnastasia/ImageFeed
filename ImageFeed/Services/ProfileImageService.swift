@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
 enum ProfileImageServiceConstants {
     static let unsplashUserURLString = "https://api.unsplash.com/users/"
@@ -21,9 +22,9 @@ final class ProfileImageService {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private(set) var avatarURL: String?
-    private let storage = OAuth2Service.shared.oauth2TokenStorage
     private let jsonDecoder = JSONDecoder()
     private let urlSession = URLSession.shared
+    private let secureDataManager = SecureDataManager.shared
     private var task: URLSessionTask?
     private var lastUsername: String?
     
@@ -87,7 +88,7 @@ final class ProfileImageService {
             return nil
         }
         
-        guard let token = storage?.token else {
+        guard let token = secureDataManager.getToken() else {
             print("Token not found")
             return nil
         }

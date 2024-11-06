@@ -6,13 +6,14 @@
 //
 
 import UIKit
+import SwiftKeychainWrapper
 
 final class SplashViewController: UIViewController {
     
     // MARK: - Private Properties
-    private let storage = OAuth2Service.shared.oauth2TokenStorage
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private let secureDataManager = SecureDataManager.shared
     private let ShowAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     private let TabBarViewControllerIdentifier = "TabBarViewController"
     
@@ -20,7 +21,7 @@ final class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = storage?.token {
+        if let token = secureDataManager.getToken() {
             fetchProfile(token: token)
         } else {
             performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
@@ -57,7 +58,7 @@ extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
         
-        guard let token = storage?.token else {
+        guard let token = secureDataManager.getToken() else {
             return
         }
         fetchProfile(token: token)
