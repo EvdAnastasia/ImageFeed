@@ -77,7 +77,6 @@ extension SplashViewController: AuthViewControllerDelegate {
                 self.switchToTabBarController()
                 
             case .failure(let error):
-                // TODO [Sprint 11] Покажите ошибку получения профиля
                 print(error)
                 break
             }
