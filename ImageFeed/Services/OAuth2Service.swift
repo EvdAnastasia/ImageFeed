@@ -18,16 +18,20 @@ enum AuthServiceError: Error {
 
 final class OAuth2Service {
     
+    // MARK: - Public Properties
+    var oauth2TokenStorage: OAuth2TokenStorageProtocol?
+    
     // MARK: - Private Properties
     static let shared = OAuth2Service()
     private let jsonDecoder = JSONDecoder()
     private let urlSession = URLSession.shared
-    private let secureDataManager = SecureDataManager.shared
     private var task: URLSessionTask?
     private var lastCode: String?
     
     // MARK: - Initializers
-    private init() {}
+    private init() {
+        oauth2TokenStorage = OAuth2TokenStorage()
+    }
     
     // MARK: - Public Methods
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -53,12 +57,7 @@ final class OAuth2Service {
             switch result {
             case .success(let data):
                 let token = data.token
-                if secureDataManager.saveToken(token: token) {
-                    print("Token saved to keychain")
-                } else {
-                    print("[OAuth2Service.fetchOAuthToken]: KeychainWrapperError - Error saving token to keychain")
-                }
-    
+                self.oauth2TokenStorage?.token = token
                 completion(.success(token))
                 
             case .failure(let error):

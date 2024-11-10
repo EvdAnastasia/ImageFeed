@@ -24,7 +24,7 @@ final class ProfileImageService {
     private(set) var avatarURL: String?
     private let jsonDecoder = JSONDecoder()
     private let urlSession = URLSession.shared
-    private let secureDataManager = SecureDataManager.shared
+    private let storage = OAuth2Service.shared.oauth2TokenStorage
     private var task: URLSessionTask?
     private var lastUsername: String?
     
@@ -88,7 +88,7 @@ final class ProfileImageService {
             return nil
         }
         
-        guard let token = secureDataManager.getToken() else {
+        guard let token = storage?.token else {
             print("Token not found")
             return nil
         }

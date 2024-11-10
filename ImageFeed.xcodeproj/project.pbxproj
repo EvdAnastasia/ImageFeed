@@ -30,8 +30,8 @@
 		559C12852CD53EAD006A255C /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559C12842CD53EAD006A255C /* AlertModel.swift */; };
 		55A121BE2CDA597700F2000A /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 55A121BD2CDA597700F2000A /* Kingfisher */; };
 		55A121CD2CDBC45A00F2000A /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 55A121CC2CDBC45A00F2000A /* SwiftKeychainWrapper */; };
-		55A2BE8A2CDBCA33001ED19C /* SecureDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A2BE892CDBCA33001ED19C /* SecureDataManager.swift */; };
 		55DE2BF22CDF8B8000655F67 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DE2BF12CDF8B8000655F67 /* TabBarController.swift */; };
+		55DE2BF42CE128BC00655F67 /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DE2BF32CE128BC00655F67 /* OAuth2TokenStorage.swift */; };
 		55E67C5F2CCEB94800DF980E /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E67C5E2CCEB94800DF980E /* UIBlockingProgressHUD.swift */; };
 		55E89FFD2C94B19B00ED81C4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E89FFC2C94B19B00ED81C4 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
@@ -59,8 +59,8 @@
 		559C12802CD53E04006A255C /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
 		559C12822CD53E45006A255C /* AlertPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenterProtocol.swift; sourceTree = "<group>"; };
 		559C12842CD53EAD006A255C /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
-		55A2BE892CDBCA33001ED19C /* SecureDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureDataManager.swift; sourceTree = "<group>"; };
 		55DE2BF12CDF8B8000655F67 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		55DE2BF32CE128BC00655F67 /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		55E67C5E2CCEB94800DF980E /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		55E89FFC2C94B19B00ED81C4 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -157,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				555B61112CBC2F3F00D9217F /* OAuth2Service.swift */,
+				55DE2BF32CE128BC00655F67 /* OAuth2TokenStorage.swift */,
 				5563C0082CCFDF10000870D8 /* ProfileService.swift */,
 				559C12792CD4ED9A006A255C /* ProfileImageService.swift */,
 			);
@@ -168,7 +169,6 @@
 			children = (
 				555B61162CBC3F3E00D9217F /* URLSession+data.swift */,
 				55E67C5E2CCEB94800DF980E /* UIBlockingProgressHUD.swift */,
-				55A2BE892CDBCA33001ED19C /* SecureDataManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -280,7 +280,7 @@
 			files = (
 				551514952C88B2D5008D4F87 /* ImagesListViewController.swift in Sources */,
 				55DE2BF22CDF8B8000655F67 /* TabBarController.swift in Sources */,
-				55A2BE8A2CDBCA33001ED19C /* SecureDataManager.swift in Sources */,
+				55DE2BF42CE128BC00655F67 /* OAuth2TokenStorage.swift in Sources */,
 				555B61172CBC3F3E00D9217F /* URLSession+data.swift in Sources */,
 				55223FE42C8F7B2F009B64E1 /* ImagesListCell.swift in Sources */,
 				5501FD512CB0378C0029386D /* Constants.swift in Sources */,
