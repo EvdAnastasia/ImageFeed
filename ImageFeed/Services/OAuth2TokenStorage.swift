@@ -10,6 +10,8 @@ import SwiftKeychainWrapper
 
 protocol OAuth2TokenStorageProtocol {
     var token: String? { get set }
+    
+    func deleteToken() -> Void
 }
 
 final class OAuth2TokenStorage: OAuth2TokenStorageProtocol {
