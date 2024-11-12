@@ -14,10 +14,12 @@ final class AuthViewController: UIViewController {
     
     // MARK: - Private Properties
     private let showWebViewSegueIdentifier = "ShowWebView"
+    private var alertPresenter: AlertPresenterProtocol?
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        alertPresenter = AlertPresenter(delegate: self)
         configureBackButton()
     }
     
@@ -43,18 +45,36 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        UIBlockingProgressHUD.show()
+        
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
             guard let self else { return }
+            
+            UIBlockingProgressHUD.dismiss()
+            
             switch result {
             case .success:
                 delegate?.didAuthenticate(self)
             case .failure(let error):
                 print(error)
+                self.showErrorAlert()
             }
         }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
+    }
+    
+    private func showErrorAlert() {
+        let alertModel = AlertModel(
+            identifier: "Network error",
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            buttonText: "Ок",
+            completion: {}
+        )
+        
+        alertPresenter?.showAlert(result: alertModel)
     }
 }

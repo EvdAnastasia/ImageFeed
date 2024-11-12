@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
+    private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     private lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "Avatar")
         return view
     }()
     
@@ -25,7 +28,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Екатерина Новикова"
         label.textColor = .ypWhite
         label.font = .boldSystemFont(ofSize: 23.0)
         return label
@@ -33,7 +35,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var loginNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "@ekaterina_nov"
         label.textColor = .ypGray
         label.font = .systemFont(ofSize: 13.0)
         return label
@@ -41,7 +42,6 @@ final class ProfileViewController: UIViewController {
     
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Hello, World!"
         label.textColor = .ypWhite
         label.font = .systemFont(ofSize: 13.0)
         return label
@@ -50,10 +50,45 @@ final class ProfileViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .ypBlack
         setupConstraints()
+        
+        guard let profile = profileService.profile else { return }
+        updateProfileDetails(profile: profile)
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()
     }
     
     // MARK: - Private Methods
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        loginNameLabel.text = profile.loginName
+        
+        if let bio = profile.bio {
+            descriptionLabel.text = bio
+        }
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        let processor = RoundCornerImageProcessor(cornerRadius: 45)
+        avatarImageView.kf.indicatorType = .activity
+        avatarImageView.kf.setImage(with: url,
+                                    options: [.processor(processor)])
+    }
+    
     private func setupConstraints() {
         [avatarImageView,
          logoutButton,

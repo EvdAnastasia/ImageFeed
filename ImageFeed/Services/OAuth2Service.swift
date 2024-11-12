@@ -6,9 +6,14 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
 enum OAuth2ServiceConstants {
     static let unsplashOAuthTokenURLString = "https://unsplash.com/oauth/token"
+}
+
+enum AuthServiceError: Error {
+    case invalidRequest
 }
 
 final class OAuth2Service {
@@ -19,6 +24,9 @@ final class OAuth2Service {
     // MARK: - Private Properties
     static let shared = OAuth2Service()
     private let jsonDecoder = JSONDecoder()
+    private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
     
     // MARK: - Initializers
     private init() {
@@ -26,31 +34,40 @@ final class OAuth2Service {
     }
     
     // MARK: - Public Methods
-    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        guard let request = makeOAuthTokenRequest(code: code) else {
-            return print("Request not found")
+    func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {        
+        guard lastCode != code else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
         }
         
-        let task = URLSession.shared.data(for: request) { [weak self] result in
+        task?.cancel()
+        lastCode = code
+        
+        guard
+            let request = makeOAuthTokenRequest(code: code)
+        else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             guard let self else { return }
             switch result {
             case .success(let data):
-                do {
-                    let oauthTokenResponseBody = try jsonDecoder.decode(OAuthTokenResponseBody.self, from: data)
-                    let token = oauthTokenResponseBody.token
-                    self.oauth2TokenStorage?.token = token
-                    completion(.success(token))
-                } catch {
-                    print("failure decoding: \(error)")
-                    completion(.failure(error))
-                }
+                let token = data.token
+                self.oauth2TokenStorage?.token = token
+                completion(.success(token))
                 
             case .failure(let error):
-                print("failure: \(error)")
+                print("[OAuth2Service.fetchOAuthToken]: NetworkError - \(String(describing: error))")
                 completion(.failure(error))
             }
+            
+            self.task = nil
+            self.lastCode = nil
         }
         
+        self.task = task
         task.resume()
     }
     
