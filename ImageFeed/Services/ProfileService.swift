@@ -29,8 +29,6 @@ final class ProfileService {
     
     // MARK: - Public Methods
     func fetchProfile(_ token: String, completion: @escaping (Result<ProfileResult, Error>) -> Void) {
-        assert(Thread.isMainThread)
-        
         guard lastToken != token else {
             completion(.failure(ProfileServiceError.invalidRequest))
             return

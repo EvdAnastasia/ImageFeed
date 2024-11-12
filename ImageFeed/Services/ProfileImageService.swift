@@ -32,8 +32,6 @@ final class ProfileImageService {
     
     // MARK: - Public Methods
     func fetchProfileImageURL(username: String, completion: @escaping (Result<String, Error>) -> Void) {
-        assert(Thread.isMainThread)
-        
         guard lastUsername != username else {
             completion(.failure(ProfileImageServiceError.invalidRequest))
             return

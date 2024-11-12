@@ -96,7 +96,6 @@ extension SplashViewController: AuthViewControllerDelegate {
                 
             case .failure(let error):
                 print(error)
-                break
             }
         }
     }
