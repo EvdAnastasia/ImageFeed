@@ -22,7 +22,6 @@ final class ProfileImageService {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     private(set) var avatarURL: String?
-    private let jsonDecoder = JSONDecoder()
     private let urlSession = URLSession.shared
     private let storage = OAuth2Service.shared.oauth2TokenStorage
     private var task: URLSessionTask?
