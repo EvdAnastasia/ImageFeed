@@ -8,6 +8,10 @@
 import UIKit
 import Kingfisher
 
+protocol ImagesListCellDelegate: AnyObject {
+    func imageListCellDidTapLike(_ cell: ImagesListCell)
+}
+
 final class ImagesListCell: UITableViewCell {
     
     // MARK: - IBOutlets
@@ -15,6 +19,9 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet private var dateLabelView: UIView!
     @IBOutlet private var dateLabel: UILabel!
     @IBOutlet private var likeButton: UIButton!
+    
+    // MARK: - Public Properties
+    weak var delegate: ImagesListCellDelegate?
     
     // MARK: - Private Properties
     static let reuseIdentifier = "ImagesListCell"
@@ -25,6 +32,11 @@ final class ImagesListCell: UITableViewCell {
         
         // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
         cellImage.kf.cancelDownloadTask()
+    }
+    
+    // MARK: - IB Actions
+    @IBAction private func likeButtonClicked() {
+        delegate?.imageListCellDidTapLike(self)
     }
     
     // MARK: - Public Methods
@@ -48,5 +60,10 @@ final class ImagesListCell: UITableViewCell {
         gradientLayer.frame.size = dateLabelView.frame.size
         gradientLayer.colors = [colorTop, colorBottom]
         dateLabelView.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    func setIsLiked(_ isLiked: Bool) {
+        let likeImage = isLiked ? UIImage(named: "LikeButtonOn") : UIImage(named: "LikeButtonOff")
+        likeButton.setImage(likeImage, for: .normal)
     }
 }

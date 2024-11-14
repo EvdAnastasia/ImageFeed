@@ -15,6 +15,11 @@ enum ImagesListServiceError: Error {
     case invalidRequest
 }
 
+enum ImagesListServiceHTTPMethods {
+    static let post = "POST"
+    static let delete = "DELETE"
+}
+
 final class ImagesListService {
     
     // MARK: - Private Properties
@@ -68,6 +73,48 @@ final class ImagesListService {
         task.resume()
     }
     
+    func changeLike(photoId: String, isLiked: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        guard task == nil else { return }
+        
+        let requestMethod = isLiked ? ImagesListServiceHTTPMethods.post : ImagesListServiceHTTPMethods.delete
+        
+        guard
+            let request = makeChangeLikeURLRequest(id: photoId, requestMethod: requestMethod)
+        else {
+            print("Invalid changeLike request")
+            return
+        }
+        
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<Photos, Error>) in
+            guard let self else { return }
+            switch result {
+            case .success:
+                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                    let photo = self.photos[index]
+                    let newPhoto = Photo(
+                        id: photo.id,
+                        size: photo.size,
+                        createdAt: photo.createdAt,
+                        welcomeDescription: photo.welcomeDescription,
+                        thumbImageURL: photo.thumbImageURL,
+                        largeImageURL: photo.largeImageURL,
+                        isLiked: !photo.isLiked
+                    )
+                    self.photos[index] = newPhoto
+                }
+                completion(.success(()))
+            case .failure(let error):
+                print("[ImagesListService.changeLike]: NetworkError - \(String(describing: error))")
+                completion(.failure(error))
+            }
+            
+            self.task = nil
+        }
+        
+        self.task = task
+        task.resume()
+    }
+    
     // MARK: - Private Methods
     private func makePhotosNextPageURLRequest(page: Int) -> URLRequest? {
         guard let urlComponents = URLComponents(string: ImagesListServiceConstants.unsplashPhotosURLString + "?page=\(page)") else {
@@ -101,5 +148,27 @@ final class ImagesListService {
         )
         
         return photo
+    }
+    
+    private func makeChangeLikeURLRequest(id: String, requestMethod: String) -> URLRequest? {
+        guard let urlComponents = URLComponents(string: ImagesListServiceConstants.unsplashPhotosURLString + "\(id)/like") else {
+            print("URLComponents not found")
+            return nil
+        }
+        
+        guard let url = urlComponents.url else {
+            print("URL not found")
+            return nil
+        }
+        
+        guard let token = storage?.token else {
+            print("Token not found")
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = requestMethod
+        return request
     }
 }

@@ -34,3 +34,7 @@ struct UrlsResult: Decodable {
         case largeImageURL = "full"
     }
 }
+
+struct Photos: Decodable {
+    let photo: PhotoResult
+}

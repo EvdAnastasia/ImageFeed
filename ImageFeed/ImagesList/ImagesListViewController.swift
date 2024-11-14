@@ -100,6 +100,7 @@ extension ImagesListViewController: UITableViewDataSource {
         let isLiked = photos[indexPath.row].isLiked
         
         imageListCell.configCell(imageURL: imageURL, date: date, isLiked: isLiked)
+        imageListCell.delegate = self
         return imageListCell
     }
     
@@ -124,6 +125,28 @@ extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row + 1 == photos.count {
             imagesListService.fetchPhotosNextPage()
+        }
+    }
+}
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        
+        UIBlockingProgressHUD.show()
+        imagesListService.changeLike(photoId: photo.id, isLiked: !photo.isLiked) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success:
+                self.photos = self.imagesListService.photos
+                cell.setIsLiked(self.photos[indexPath.row].isLiked)
+                UIBlockingProgressHUD.dismiss()
+            case .failure(let error):
+                UIBlockingProgressHUD.dismiss()
+                print("[ImagesListViewController.imageListCellDidTapLike]: NetworkError - \(String(describing: error))")
+            }
         }
     }
 }
