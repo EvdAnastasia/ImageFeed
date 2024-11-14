@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ImagesListCell: UITableViewCell {
-
+    
     // MARK: - IBOutlets
     @IBOutlet private var cellImage: UIImageView!
     @IBOutlet private var dateLabelView: UIView!
@@ -18,9 +19,24 @@ final class ImagesListCell: UITableViewCell {
     // MARK: - Private Properties
     static let reuseIdentifier = "ImagesListCell"
     
+    // MARK: - Overrides Methods
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        // Отменяем загрузку, чтобы избежать багов при переиспользовании ячеек
+        cellImage.kf.cancelDownloadTask()
+    }
+    
     // MARK: - Public Methods
-    func configCell(image: UIImage, date: String, isLiked: Bool) {
-        cellImage.image = image
+    func configCell(imageURL: String, date: String, isLiked: Bool) {
+        guard
+            let url = URL(string: imageURL)
+        else { return }
+        cellImage.kf.indicatorType = .activity
+        cellImage.kf.setImage(with: url,
+                              placeholder: UIImage(named: "PhotoPlaceholder")
+        )
+        
         dateLabel.text = date
         
         let likeImage = isLiked ? UIImage(named: "LikeButtonOn") : UIImage(named: "LikeButtonOff")

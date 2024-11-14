@@ -55,6 +55,8 @@ final class ImagesListService {
                         name: ImagesListService.didChangeNotification,
                         object: self)
                 
+                lastLoadedPage = nextPage
+                
             case .failure(let error):
                 print("[ImagesListService.fetchPhotosNextPage]: NetworkError - \(String(describing: error))")
             }
