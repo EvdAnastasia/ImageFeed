@@ -69,22 +69,41 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func setImage(url: String) {
+        
         guard
             let url = URL(string: url)
         else { return }
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: url,
-                              placeholder: UIImage(named: "PhotoPlaceholder")) { [weak self] result in
+        
+        UIBlockingProgressHUD.show()
+        
+        imageView.kf.setImage(with: url) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
             
             guard let self else { return }
             switch result {
-            case .success(let value):
-                self.image = value.image
+            case .success(let imageResult):
+                self.image = imageResult.image
             case .failure:
-                print("Set image error")
+                self.showError()
             }
         }
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Поробовать еще раз",
+            preferredStyle: .alert
+        )
+        let cancelAction = UIAlertAction(title: "Не надо", style: .default)
+        let retryAction = UIAlertAction(title: "Попробовать еще раз", style: .default) { [weak self] _ in
+            guard let imageURL = self?.imageURL else { return }
+            self?.setImage(url: imageURL)
+        }
         
+        alert.addAction(cancelAction)
+        alert.addAction(retryAction)
+        self.present(alert, animated: true)
     }
 }
 
