@@ -69,7 +69,6 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func setImage(url: String) {
-        
         guard
             let url = URL(string: url)
         else { return }
