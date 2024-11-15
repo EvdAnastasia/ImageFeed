@@ -115,6 +115,10 @@ final class ImagesListService {
         task.resume()
     }
     
+    func cleanPhotosData() {
+        photos = []
+    }
+    
     // MARK: - Private Methods
     private func makePhotosNextPageURLRequest(page: Int) -> URLRequest? {
         guard let urlComponents = URLComponents(string: ImagesListServiceConstants.unsplashPhotosURLString + "?page=\(page)") else {

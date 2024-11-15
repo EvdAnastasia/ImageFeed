@@ -73,6 +73,10 @@ final class ProfileImageService {
         task.resume()
     }
     
+    func cleanAvatarData() {
+        avatarURL = nil
+    }
+    
     // MARK: - Private Methods
     private func makeProfileImageURLRequest(username: String) -> URLRequest? {
         guard let urlComponents = URLComponents(string: ProfileImageServiceConstants.unsplashUserURLString + "\(username)") else {

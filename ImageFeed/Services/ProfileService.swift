@@ -63,6 +63,10 @@ final class ProfileService {
         task.resume()
     }
     
+    func cleanProfileData() {
+        profile = nil
+    }
+    
     // MARK: - Private Methods
     private func makeProfileRequest(token: String) -> URLRequest? {
         guard let urlComponents = URLComponents(string: ProfileServiceConstants.unsplashProfileURLString) else {

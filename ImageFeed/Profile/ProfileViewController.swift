@@ -12,6 +12,7 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - Private Properties
     private let profileService = ProfileService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
     private lazy var avatarImageView: UIImageView = {
@@ -23,6 +24,7 @@ final class ProfileViewController: UIViewController {
         let button = UIButton()
         let buttonImage = UIImage(named: "LogoutButton")
         button.setImage(buttonImage, for: .normal)
+        button.addTarget(self, action: #selector(didTapExitButton), for: .touchUpInside)
         return button
     }()
     
@@ -87,6 +89,21 @@ final class ProfileViewController: UIViewController {
         avatarImageView.kf.indicatorType = .activity
         avatarImageView.kf.setImage(with: url,
                                     options: [.processor(processor)])
+    }
+    
+    @objc private func didTapExitButton() {
+        profileLogoutService.logout()
+        switchToSplashViewController()
+    }
+    
+    private func switchToSplashViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        
+        let splashViewController = SplashViewController()
+        window.rootViewController = splashViewController
     }
     
     private func setupConstraints() {
