@@ -10,6 +10,7 @@ import UIKit
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Public Properties
+    var imageURL: String?
     var image: UIImage? {
         didSet {
             guard isViewLoaded, let image else { return }
@@ -29,10 +30,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
-        guard let image else { return }
-        imageView.image = image
-        imageView.frame.size = image.size
-        rescaleAndCenterImageInScrollView(image: image)
+        guard let imageURL else { return }
+        setImage(url: imageURL)
     }
     
     // MARK: - IBActions
@@ -67,6 +66,43 @@ final class SingleImageViewController: UIViewController {
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+    }
+    
+    private func setImage(url: String) {
+        guard
+            let url = URL(string: url)
+        else { return }
+        
+        UIBlockingProgressHUD.show()
+        
+        imageView.kf.setImage(with: url) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.image = imageResult.image
+            case .failure:
+                self.showError()
+            }
+        }
+    }
+    
+    private func showError() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Поробовать еще раз",
+            preferredStyle: .alert
+        )
+        let cancelAction = UIAlertAction(title: "Не надо", style: .default)
+        let retryAction = UIAlertAction(title: "Попробовать еще раз", style: .default) { [weak self] _ in
+            guard let imageURL = self?.imageURL else { return }
+            self?.setImage(url: imageURL)
+        }
+        
+        alert.addAction(cancelAction)
+        alert.addAction(retryAction)
+        self.present(alert, animated: true)
     }
 }
 
