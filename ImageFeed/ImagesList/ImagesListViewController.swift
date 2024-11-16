@@ -18,10 +18,10 @@ final class ImagesListViewController: UIViewController {
     private let imagesListService = ImagesListService.shared
     private var photos: [Photo] = []
     
-    private let dateFormatter: DateFormatter = {
+    private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
+        formatter.dateFormat = "dd MMMM yyyy"
+        formatter.locale = Locale(identifier: "ru_RU")
         return formatter
     }()
     
@@ -71,7 +71,7 @@ final class ImagesListViewController: UIViewController {
                     IndexPath(row: i, section: 0)
                 }
                 tableView.insertRows(at: indexPaths, with: .automatic)
-            } completion: { _ in }
+            }
         }
     }
 }
@@ -136,15 +136,14 @@ extension ImagesListViewController: ImagesListCellDelegate {
         
         UIBlockingProgressHUD.show()
         imagesListService.changeLike(photoId: photo.id, isLiked: !photo.isLiked) { [weak self] result in
-            guard let self else { return }
+            UIBlockingProgressHUD.dismiss()
             
+            guard let self else { return }
             switch result {
             case .success:
                 self.photos = self.imagesListService.photos
                 cell.setIsLiked(self.photos[indexPath.row].isLiked)
-                UIBlockingProgressHUD.dismiss()
             case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
                 print("[ImagesListViewController.imageListCellDidTapLike]: NetworkError - \(String(describing: error))")
             }
         }
