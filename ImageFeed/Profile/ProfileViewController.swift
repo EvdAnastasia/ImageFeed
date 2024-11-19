@@ -8,12 +8,14 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    
+    // MARK: - Public Properties
+    var presenter: ProfileViewPresenterProtocol?
     
     // MARK: - Private Properties
-    private let profileService = ProfileService.shared
-    private let profileLogoutService = ProfileLogoutService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    private var alertPresenter: AlertPresenterProtocol?
     
     private lazy var avatarImageView: UIImageView = {
         let view = UIImageView()
@@ -52,11 +54,11 @@ final class ProfileViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        alertPresenter = AlertPresenter(delegate: self)
         view.backgroundColor = .ypBlack
         setupConstraints()
         
-        guard let profile = profileService.profile else { return }
-        updateProfileDetails(profile: profile)
+        presenter?.viewDidLoad()
         
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -65,13 +67,12 @@ final class ProfileViewController: UIViewController {
                 queue: .main
             ) { [weak self] _ in
                 guard let self = self else { return }
-                self.updateAvatar()
+                self.presenter?.updateAvatar()
             }
-        updateAvatar()
     }
     
-    // MARK: - Private Methods
-    private func updateProfileDetails(profile: Profile) {
+    // MARK: - Public Methods
+    func updateProfileDetails(profile: Profile) {
         nameLabel.text = profile.name
         loginNameLabel.text = profile.loginName
         
@@ -80,37 +81,34 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
+    func updateAvatar(with url: URL) {
         let processor = RoundCornerImageProcessor(cornerRadius: 45)
         avatarImageView.kf.indicatorType = .activity
         avatarImageView.kf.setImage(with: url,
                                     options: [.processor(processor)])
     }
     
-    @objc private func didTapExitButton() {
-        showExitAlert()
-    }
-    
-    private func showExitAlert() {
-        let alert = UIAlertController(
+    func showExitAlert() {
+        let alertModel = AlertModel(
+            identifier: "Exit alert",
             title: "Пока, пока!",
             message: "Уверены, что хотите выйти?",
-            preferredStyle: .alert
+            buttonText: "Да",
+            secondButtonText: "Нет",
+            completion: { [weak self] in
+                guard let self = self else { return }
+                self.presenter?.logout()
+                self.switchToSplashViewController()
+            },
+            secondCompletion: nil
         )
-        let yesAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
-            guard let self else { return }
-            self.profileLogoutService.logout()
-            self.switchToSplashViewController()
-        }
-        let noAction = UIAlertAction(title: "Нет", style: .default)
         
-        alert.addAction(yesAction)
-        alert.addAction(noAction)
-        present(alert, animated: true)
+        alertPresenter?.showAlert(result: alertModel)
+    }
+    
+    // MARK: - Private Methods
+    @objc private func didTapExitButton() {
+        presenter?.didTapExitButton()
     }
     
     private func switchToSplashViewController() {

@@ -77,7 +77,9 @@ extension AuthViewController: WebViewViewControllerDelegate {
             title: "Что-то пошло не так",
             message: "Не удалось войти в систему",
             buttonText: "Ок",
-            completion: {}
+            secondButtonText: nil,
+            completion: nil,
+            secondCompletion: nil
         )
         
         alertPresenter?.showAlert(result: alertModel)
