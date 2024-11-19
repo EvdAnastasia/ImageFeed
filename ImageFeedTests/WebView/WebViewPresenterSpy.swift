@@ -1,5 +1,5 @@
 //
-//  Test.swift
+//  WebViewPresenterSpy.swift
 //  ImageFeedTests
 //
 //  Created by Anastasiia on 19.11.2024.

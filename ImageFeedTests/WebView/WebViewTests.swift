@@ -1,5 +1,5 @@
 //
-//  ImageFeedTests.swift
+//  WebViewTests.swift
 //  ImageFeedTests
 //
 //  Created by Anastasiia on 19.11.2024.
