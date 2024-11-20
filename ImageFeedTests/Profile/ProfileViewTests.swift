@@ -26,10 +26,7 @@ final class ProfileViewTests: XCTestCase {
     func testUpdateProfileDetails() {
         //given
         let viewController = ProfileViewControllerSpy()
-        let presenter = ProfileViewPresenter()
         let profile = Profile(username: "username", firstName: "firstName", lastName: nil, bio: nil)
-        viewController.presenter = presenter
-        presenter.view = viewController
         
         //when
         viewController.updateProfileDetails(profile: profile)
@@ -41,10 +38,7 @@ final class ProfileViewTests: XCTestCase {
     func testUpdateAvatar() {
         //given
         let viewController = ProfileViewControllerSpy()
-        let presenter = ProfileViewPresenter()
         let url = URL(string: "https://practicum.yandex.ru/")
-        viewController.presenter = presenter
-        presenter.view = viewController
         
         //when
         guard let url else { return }
