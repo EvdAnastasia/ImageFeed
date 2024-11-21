@@ -5,7 +5,7 @@
 //  Created by Anastasiia on 19.11.2024.
 //
 
-import ImageFeed
+@testable import ImageFeed
 import Foundation
 
 final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
@@ -14,7 +14,7 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
     var updateAvatarCalled: Bool = false
     var showExitAlertCalled: Bool = false
     
-    func updateProfileDetails(profile: ImageFeed.Profile) {
+    func updateProfileDetails(profile: Profile) {
         updateProfileDetailsCalled = true
     }
     

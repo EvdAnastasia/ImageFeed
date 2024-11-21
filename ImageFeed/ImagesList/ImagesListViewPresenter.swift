@@ -7,12 +7,14 @@
 
 import Foundation
 
-
-
 final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     
     // MARK: - Public Properties
     weak var view: ImagesListViewControllerProtocol?
+    
+    var photosCount: Int {
+        photos.count
+    }
     
     // MARK: - Private Properties
     private let imagesListService = ImagesListService.shared
@@ -41,10 +43,6 @@ final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
         photos[index]
     }
     
-    func getPhotosCount() -> Int {
-        photos.count
-    }
-    
     func fetchPhotosNextPage(for indexPath: IndexPath) {
         let testMode =  ProcessInfo.processInfo.arguments.contains("testMode")
         if indexPath.row + 1 == photos.count && testMode == false {
@@ -67,19 +65,22 @@ final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     }
     
     func imageListCellDidTapLike(indexPath: IndexPath, cell: ImagesListCell) {
-        let photo = photos[indexPath.row]
-        view?.showProgressHUD()
-        
-        imagesListService.changeLike(photoId: photo.id, isLiked: !photo.isLiked) { [weak self] result in
-            guard let self else { return }
-            self.view?.hideProgressHUD()
+        let index = indexPath.row
+        if index >= 0 && index < photos.count {
+            let photo = photos[index]
+            view?.showProgressHUD()
             
-            switch result {
-            case .success:
-                self.photos = self.imagesListService.photos
-                cell.setIsLiked(self.photos[indexPath.row].isLiked)
-            case .failure(let error):
-                print("[ImagesListViewController.imageListCellDidTapLike]: NetworkError - \(String(describing: error))")
+            imagesListService.changeLike(photoId: photo.id, isLiked: !photo.isLiked) { [weak self] result in
+                guard let self else { return }
+                self.view?.hideProgressHUD()
+                
+                switch result {
+                case .success:
+                    self.photos = self.imagesListService.photos
+                    cell.setIsLiked(self.photos[indexPath.row].isLiked)
+                case .failure(let error):
+                    print("[ImagesListViewController.imageListCellDidTapLike]: NetworkError - \(String(describing: error))")
+                }
             }
         }
     }

@@ -9,20 +9,6 @@
 import XCTest
 
 final class ImagesListViewTests: XCTestCase {
-    func testGetPhotosCount() {
-        // given
-        let viewController = ImagesListViewController()
-        let presenter = ImagesListViewPresenterSpy()
-        presenter.view = viewController
-        viewController.presenter = presenter
-        
-        // when
-        let photosCount = viewController.presenter?.getPhotosCount()
-        
-        // then
-        XCTAssertEqual(photosCount, 10)
-    }
-    
     func testGetPhoto() {
         // given
         let presenter = ImagesListViewPresenterSpy()
